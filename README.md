@@ -169,9 +169,11 @@ Options:
 Example output:
 
 ```
-2025-07-19T16:57:42.475000Z  INFO yknotify_rs: listening for events
-2025-07-19T16:57:53.343860Z  INFO yknotify_rs: dispatching notification for touch event kind=FIDO2 event=start
-2025-07-19T16:57:54.949215Z  INFO yknotify_rs: dispatching notification for touch event kind=FIDO2 event=stop
+2025-07-19T17:05:50.259450Z  INFO yknotify_rs: listening for events
+2025-07-19T17:05:53.248759Z  INFO yknotify_rs: dispatching notification for touch event kind=FIDO2 event=start sound=Purr
+2025-07-19T17:05:54.006492Z  INFO yknotify_rs: dispatching notification for touch event kind=FIDO2 event=stop sound=Funk
+2025-07-19T17:05:57.471979Z  INFO yknotify_rs: dispatching notification for touch event kind=OpenPGP event=start sound=Pop
+2025-07-19T17:05:58.108274Z  INFO yknotify_rs: dispatching notification for touch event kind=OpenPGP event=stop sound=Funk
 ```
 
 ## Credits

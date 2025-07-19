@@ -127,39 +127,45 @@ async fn main() -> Result<()> {
             debug!(kind = %"fido2", event_message = %entry.event_message, "received event");
 
             if entry.event_message.ends_with("startQueue") {
-                info!(kind = %"FIDO2", event = %"start", "dispatching notification for touch event");
+                let sound = args
+                    .fido2_request_sound
+                    .as_deref()
+                    .or(args.request_sound.as_deref());
+
+                info!(
+                    kind = %"FIDO2",
+                    event = %"start",
+                    sound = %sound.unwrap_or("none"),
+                    "dispatching notification for touch event",
+                );
 
                 let mut notification = Notification::new();
 
                 notification
                     .summary("YubiKey Touch Needed")
                     .body("FIDO2 authentication is required.");
-
-                if let Some(sound) = args
-                    .fido2_request_sound
-                    .as_ref()
-                    .or(args.request_sound.as_ref())
-                {
-                    notification.sound_name(sound);
-                }
+                sound.map(|sound| notification.sound_name(sound));
 
                 notification.show()?;
             } else if entry.event_message.ends_with("stopQueue") {
-                info!(kind = %"FIDO2", event = %"stop", "dispatching notification for touch event");
+                let sound = args
+                    .fido2_dismissed_sound
+                    .as_deref()
+                    .or(args.dismissed_sound.as_deref());
+
+                info!(
+                    kind = %"FIDO2",
+                    event = %"stop",
+                    sound = %sound.unwrap_or("none"),
+                    "dispatching notification for touch event",
+                );
 
                 let mut notification = Notification::new();
 
                 notification
                     .summary("YubiKey Touch Confirmed")
                     .body("YubiKey touch was detected.");
-
-                if let Some(sound) = args
-                    .fido2_dismissed_sound
-                    .as_ref()
-                    .or(args.dismissed_sound.as_ref())
-                {
-                    notification.sound_name(sound);
-                }
+                sound.map(|sound| notification.sound_name(sound));
 
                 notification.show()?;
             }
@@ -181,21 +187,24 @@ async fn main() -> Result<()> {
                 // "notifying" state already).
                 openpgp_notifying = true;
 
-                info!(kind = %"OpenPGP", event = %"start", "dispatching notification for touch event");
+                let sound = args
+                    .openpgp_request_sound
+                    .as_deref()
+                    .or(args.request_sound.as_deref());
+
+                info!(
+                    kind = %"OpenPGP",
+                    event = %"start",
+                    sound = %sound.unwrap_or("none"),
+                    "dispatching notification for touch event",
+                );
 
                 let mut notification = Notification::new();
 
                 notification
                     .summary("YubiKey Touch Needed")
                     .body("OpenPGP authentication is required.");
-
-                if let Some(sound) = args
-                    .openpgp_request_sound
-                    .as_ref()
-                    .or(args.request_sound.as_ref())
-                {
-                    notification.sound_name(sound);
-                }
+                sound.map(|sound| notification.sound_name(sound));
 
                 notification.show()?;
             } else if !openpgp_needed && openpgp_notifying {
@@ -203,21 +212,24 @@ async fn main() -> Result<()> {
                 // needed), and we *are* in a "notifying" state.
                 openpgp_notifying = false;
 
-                info!(kind = %"OpenPGP", event = %"stop", "dispatching notification for touch event");
+                let sound = args
+                    .openpgp_dismissed_sound
+                    .as_deref()
+                    .or(args.dismissed_sound.as_deref());
+
+                info!(
+                    kind = %"OpenPGP",
+                    event = %"stop",
+                    sound = %sound.unwrap_or("none"),
+                    "dispatching notification for touch event",
+                );
 
                 let mut notification = Notification::new();
 
                 notification
                     .summary("YubiKey Touch Confirmed")
                     .body("YubiKey touch was detected.");
-
-                if let Some(sound) = args
-                    .openpgp_dismissed_sound
-                    .as_ref()
-                    .or(args.dismissed_sound.as_ref())
-                {
-                    notification.sound_name(sound);
-                }
+                sound.map(|sound| notification.sound_name(sound));
 
                 notification.show()?;
             }
